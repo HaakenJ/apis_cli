@@ -1,4 +1,7 @@
 import click
+import requests
+
+BASE_URL = 'https://api.publicapis.org'
 
 @click.group()
 def apis():
@@ -25,6 +28,13 @@ def random(title: str, category: str, no_auth: bool):
 @apis.command()
 def categories():
     """List all categories of APIs."""
+
+    response = requests.get(url=f'{BASE_URL}/categories')
+    if response.status_code is 200:
+        print('\n'.join(response.json()))
+    else:
+        print(f'Could not get the categories: {response.text}')
+    
 
 
 
