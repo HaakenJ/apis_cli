@@ -18,7 +18,12 @@ def entries(title: str, category: str, no_auth: bool):
         'title': title,
         'category': category
     }
+
+    if no_auth:
+        params['auth'] = 'null'
+
     response = requests.get(url=f'{BASE_URL}/entries', params=params)
+
     if response.status_code is 200:
         for i, entry in enumerate(response.json()['entries']):
             pretty_entry = '\n'.join(f'{k}: {v}' for k, v in entry.items())
@@ -33,7 +38,14 @@ def entries(title: str, category: str, no_auth: bool):
 @apis.command()
 def random(title: str, category: str, no_auth: bool):
     """List a single API selected at random."""
+    response = requests.get(url=f'{BASE_URL}/random')
 
+    if response.status_code is 200:
+        for i in response.json()['entries']:
+            pretty_entry = '\n'.join(f'{k}: {v}' for k, v in i.items())
+            print(f'\n{pretty_entry}\n')
+    else:
+        print(f'Could not get the APIs: {response.text}')
 
 
 @apis.command()
